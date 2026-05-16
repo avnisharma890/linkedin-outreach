@@ -1,0 +1,27 @@
+{
+  "name": "linkedin-outreach-extension",
+  "displayName": "LinkedIn Outreach Assistant",
+  "version": "0.1.0",
+  "description": "Scan, filter, and autofill personalized notes on LinkedIn",
+  "scripts": {
+    "dev": "plasmo dev",
+    "build": "plasmo build",
+    "package": "plasmo package"
+  },
+  "dependencies": {
+    "plasmo": "0.89.4",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "zustand": "^5.0.1"
+  },
+  "devDependencies": {
+    "@types/chrome": "0.0.270",
+    "@types/react": "18.3.11",
+    "@types/react-dom": "18.3.0",
+    "typescript": "5.6.2"
+  },
+  "manifest": {
+    "host_permissions": ["https://www.linkedin.com/*"],
+    "permissions": ["storage", "activeTab"]
+  }
+}
