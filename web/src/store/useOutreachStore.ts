@@ -1,3 +1,6 @@
+// TODO(owner: vansh; collaborator: avni)
+// - Add error state and reset actions in store.
+// - Support pagination params and incremental fetch strategy.
 import { create } from "zustand";
 
 export interface Contact {

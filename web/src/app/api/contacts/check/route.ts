@@ -1,3 +1,6 @@
+// TODO(owner: vansh; collaborator: avni)
+// - Normalize profile URLs before duplicate lookup.
+// - Return consistent validation errors for malformed payloads.
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import { Contact } from "@/models/Contact";

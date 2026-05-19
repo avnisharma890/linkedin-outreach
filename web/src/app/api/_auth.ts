@@ -1,3 +1,6 @@
+// TODO(owner: vansh; collaborator: avni)
+// - Document auth behavior for local vs production use.
+// - Return standardized unauthorized response format across APIs.
 import { NextResponse } from "next/server";
 
 // Minimal shared-secret guard. Swap for NextAuth when you add real users.
