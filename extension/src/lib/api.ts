@@ -1,3 +1,6 @@
+// TODO(owner: avni; collaborator: vansh)
+// - Add retry with exponential backoff for transient failures.
+// - Handle non-OK responses with typed error objects.
 const BASE = process.env.PLASMO_PUBLIC_API_BASE!;
 const KEY = process.env.PLASMO_PUBLIC_API_KEY!;
 

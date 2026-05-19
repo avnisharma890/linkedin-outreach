@@ -1,3 +1,6 @@
+// TODO(owner: avni; collaborator: vansh)
+// - Add model fallback list and timeout controls.
+// - Add output guardrails (length/tone) with safe fallback message.
 // Thin wrapper around OpenRouter's chat completions endpoint.
 // Free models tried in order; first success wins.
 

@@ -1,3 +1,7 @@
+/* TODO(owner: vansh; collaborator: avni)
+ * - Add design tokens and reusable utility classes.
+ * - Improve responsive spacing/typography consistency for dashboard screens.
+ */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

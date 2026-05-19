@@ -1,3 +1,6 @@
+// TODO(owner: vansh; collaborator: avni)
+// - Add shared app shell (header/footer) and metadata refinements.
+// - Add global providers here if state/theme/auth wrappers are introduced.
 import "./globals.css";
 import type { Metadata } from "next";
 

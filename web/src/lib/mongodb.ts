@@ -1,3 +1,6 @@
+// TODO(owner: avni; collaborator: vansh)
+// - Add connection error logging/observability hooks.
+// - Support optional health-check helper for DB readiness.
 import mongoose from "mongoose";
 
 // Cached connection — required for serverless (Vercel) so we don't open
