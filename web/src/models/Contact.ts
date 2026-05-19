@@ -1,3 +1,6 @@
+// TODO(owner: avni; collaborator: vansh)
+// - Review and add useful secondary indexes for query patterns.
+// - Add optional fields for outreach lifecycle tracking (reply stage/notes).
 import mongoose, { Schema, model, models } from "mongoose";
 
 const ContactSchema = new Schema(

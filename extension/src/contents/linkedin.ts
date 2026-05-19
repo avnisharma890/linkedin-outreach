@@ -1,3 +1,6 @@
+// TODO(owner: avni; collaborator: vansh)
+// - Add fallback selectors and defensive scraping guards.
+// - Make batch size and delays configurable for safer runs.
 import type { PlasmoCSConfig } from "plasmo";
 import { matchesKeywords, inferRole, type ScrapedProfile } from "~lib/filter";
 

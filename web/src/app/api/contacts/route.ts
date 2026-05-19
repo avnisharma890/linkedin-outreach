@@ -1,3 +1,6 @@
+// TODO(owner: vansh; collaborator: avni)
+// - Add pagination and query validation for GET.
+// - Harden POST validation/sanitization and structured error responses.
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import { Contact } from "@/models/Contact";

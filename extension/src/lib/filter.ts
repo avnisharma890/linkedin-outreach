@@ -1,3 +1,6 @@
+// TODO(owner: avni; collaborator: vansh)
+// - Make keyword list configurable via settings.
+// - Add unit tests for matching and role inference edge-cases.
 export const KEYWORDS = [
   "student",
   "b.tech",

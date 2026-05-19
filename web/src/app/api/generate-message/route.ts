@@ -1,3 +1,6 @@
+// TODO(owner: vansh; collaborator: avni)
+// - Validate payload schema before generation.
+// - Add timeout/fallback handling for upstream AI failures.
 import { NextResponse } from "next/server";
 import { generateOutreachMessage } from "@/lib/openrouter";
 import { requireApiKey } from "../_auth";

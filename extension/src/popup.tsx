@@ -1,3 +1,6 @@
+// TODO(owner: avni; collaborator: vansh)
+// - Add per-profile progress and retry UI states.
+// - Improve UX copy for skipped, failed, and sent states.
 import { useState } from "react";
 import { checkDuplicate, generateMessage, saveContact, withJitter } from "~lib/api";
 import type { ScrapedProfile } from "~lib/filter";

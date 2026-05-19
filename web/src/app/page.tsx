@@ -1,3 +1,6 @@
+// TODO(owner: vansh; collaborator: avni)
+// - Add client-side sorting/filter UI for contacts.
+// - Show clear loading, empty, and error states with retry action.
 "use client";
 import { useEffect } from "react";
 import { useOutreachStore } from "@/store/useOutreachStore";
