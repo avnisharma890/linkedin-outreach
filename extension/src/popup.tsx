@@ -10,26 +10,66 @@ type Enriched = ScrapedProfile & { role?: string; message?: string; skipped?: bo
 export default function Popup() {
   const [profiles, setProfiles] = useState<Enriched[]>([]);
   const [busy, setBusy] = useState(false);
-  const [log, setLog] = useState<string>("");
+  const [log, setLog] = useState<string>("Connect to a LinkedIn search/results page, then scan.");
 
-  async function withActiveTab<T>(fn: (tabId: number) => Promise<T>): Promise<T> {
+  async function withActiveLinkedInTab<T>(fn: (tabId: number) => Promise<T>): Promise<T> {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     if (!tab?.id) throw new Error("No active tab");
+
+    const url = tab.url ?? "";
+    if (!url.startsWith("https://www.linkedin.com/")) {
+      throw new Error("Open an active LinkedIn tab first.");
+    }
+
     return fn(tab.id);
+  }
+
+  /**
+   * Lightweight handshake to verify popup <-> content-script connectivity.
+   * @returns true if the extension can message the LinkedIn tab successfully.
+   */
+  async function connectLinkedIn(): Promise<boolean> {
+    try {
+      setBusy(true);
+      setLog("Connecting to LinkedIn tab…");
+
+      const result = await withActiveLinkedInTab(
+        (id) => new Promise<{ all: ScrapedProfile[]; matched: ScrapedProfile[] } | undefined>((resolve) =>
+          chrome.tabs.sendMessage(id, { type: "SCRAPE" }, (res) => resolve(res))
+        )
+      );
+
+      if (!result) {
+        setLog("Connection failed: content script not reachable. Reload LinkedIn tab and try again.");
+        return false;
+      }
+
+      setLog(`Connected ✓ Ready. Visible cards: ${result.all.length}, matched: ${result.matched.length}`);
+      return true;
+    } catch (error: any) {
+      setLog(error?.message ?? "Failed to connect to LinkedIn tab.");
+      return false;
+    } finally {
+      setBusy(false);
+    }
   }
 
   async function scan() {
     setBusy(true);
     setLog("Scanning…");
     try {
-      const matched = await withActiveTab(
+      const matched = await withActiveLinkedInTab(
         (id) => new Promise<Enriched[]>((resolve) =>
           chrome.tabs.sendMessage(id, { type: "SCRAPE" }, (res) => resolve(res?.matched ?? []))
         )
       );
       setProfiles(matched);
       setLog(`Found ${matched.length} matching profiles`);
-    } finally { setBusy(false); }
+    } catch (error: any) {
+      setLog(error?.message ?? "Scan failed.");
+    } finally {
+      setBusy(false);
+    }
   }
 
   async function generateAll() {
@@ -54,13 +94,12 @@ export default function Popup() {
 
   async function fillSelected(p: Enriched) {
     if (!p.message) return;
-    const ok = await withActiveTab(
+    const ok = await withActiveLinkedInTab(
       (id) => new Promise<boolean>((resolve) =>
         chrome.tabs.sendMessage(id, { type: "AUTOFILL", text: p.message }, (res) => resolve(Boolean(res?.ok)))
       )
     );
     if (!ok) { setLog("Open the message composer on LinkedIn first."); return; }
-    // Save as sent — user reviews and clicks Send themselves.
     await saveContact({
       profileUrl: p.profileUrl,
       name: p.name,
@@ -73,7 +112,8 @@ export default function Popup() {
   return (
     <div style={{ width: 380, padding: 12, fontFamily: "system-ui", background: "#0a0a0a", color: "#fafafa" }}>
       <h1 style={{ fontSize: 16, margin: "0 0 8px" }}>LinkedIn Outreach</h1>
-      <div style={{ display: "flex", gap: 6, marginBottom: 8 }}>
+      <div style={{ display: "flex", gap: 6, marginBottom: 8, flexWrap: "wrap" }}>
+        <button onClick={connectLinkedIn} disabled={busy} style={btn}>Connect LinkedIn</button>
         <button onClick={scan} disabled={busy} style={btn}>Scan Profiles</button>
         <button onClick={generateAll} disabled={busy || profiles.length === 0} style={btn}>Generate Messages</button>
       </div>
