@@ -1,6 +1,3 @@
-// TODO(owner: avni; collaborator: vansh)
-// - Add connection error logging/observability hooks.
-// - Support optional health-check helper for DB readiness.
 import mongoose from "mongoose";
 
 // Cached connection — required for serverless (Vercel) so we don't open
@@ -17,11 +14,55 @@ const globalForMongo = global as unknown as { _mongo?: Cached };
 const cached: Cached = globalForMongo._mongo ?? { conn: null, promise: null };
 globalForMongo._mongo = cached;
 
-export async function connectDB() {
-  if (cached.conn) return cached.conn;
-  if (!cached.promise) {
-    cached.promise = mongoose.connect(MONGODB_URI!, { bufferCommands: false });
+mongoose.connection.on("connected", () => {
+  console.log("[MongoDB] Connected");
+});
+
+mongoose.connection.on("error", (err) => {
+  console.error(
+    "[MongoDB] Connection error:",
+    err.message
+  );
+});
+
+mongoose.connection.on("disconnected", () => {
+  console.warn("[MongoDB] Disconnected");
+});
+
+ export async function connectDB() {
+    try {
+      if (cached.conn) {
+        return cached.conn;
+      }
+
+      if (!cached.promise) {
+        console.log(
+          "[MongoDB] Creating new connection..."
+        );
+
+        cached.promise = mongoose.connect(
+          MONGODB_URI!,
+          {
+            bufferCommands: false,
+          }
+        );
+      }
+
+      cached.conn = await cached.promise;
+
+      return cached.conn;
+    } catch (error) {
+      console.error(
+        "[MongoDB] Failed to connect:",
+        error
+      );
+
+      cached.promise = null;
+
+      throw error;
+    }
   }
-  cached.conn = await cached.promise;
-  return cached.conn;
+
+export function isDBConnected() {
+  return mongoose.connection.readyState === 1;
 }
